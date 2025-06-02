@@ -8,6 +8,65 @@
     :root {
       --escala: 1;
     }
+   .switch {
+      position: relative;
+      width: 80px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 19px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0 auto;
+    }
+    .conserva {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
+      margin: 0 auto;
+    }
+    .switch:hover {
+      background-color: #a8a8a8;
+    }
+
+    .switch.on {
+      background-color: #5ed362;
+    }
+    .switch.on:hover {
+      background-color: #58c45c;
+    }
+
+    .toggle-circle {
+      width: 30px;
+      height: 30px;
+      background-color: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      left: 7px;
+      transition: left 0.3s;
+      z-index: 2;
+    }
+
+    .switch.on .toggle-circle {
+      left: 42px;
+    }
+
+    .switch-labels {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: white;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 1;
+    }
     .imagemcgrdiv img {
     width: 200px;
     height: 200px;
@@ -37,6 +96,22 @@
       z-index: 4;
     }
 
+    .conservaEspecial {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      margin: 0 auto;
+      gap: 15px;
+      top: 80px;
+      left: 35vw;
+      animation: inicio1 0.8s ease-in-out forwards;
+    }
+
+    .conservaEspecial.t1 {
+      display: flex;
+    }
+
     .rcs {
       padding-top: 8px;
       padding-bottom: 8px;
@@ -53,7 +128,6 @@
       animation: inicio1 0.8s ease-in-out forwards;
       left: 202px;
       top: 20px;
-      position: relative;
       z-index: 3;
     }
 
@@ -316,8 +390,9 @@
 .escolha,  /* 620px */
 .rcs, /* 216px */
 .suggestions-list, /* 400px */
-.search-box /* 400px */ {
-    zoom: 0.3;
+.search-box,
+.conservaEspecial /* 400px */ {
+    zoom: 0.5;
     transform-origin: top left;
 }
 }
@@ -325,7 +400,8 @@
   .escolha,  /* 620px */
 .rcs, /* 216px */
 .suggestions-list, /* 400px */
-.search-box /* 400px */ {
+.search-box,
+.conservaEspecial /* 400px */ {
     zoom: 0.7;
     transform-origin: top left;
 }
@@ -335,17 +411,19 @@
   .escolha,  /* 620px */
 .rcs, /* 216px */
 .suggestions-list, /* 400px */
-.search-box /* 400px */ {
+.search-box,
+.conservaEspecial /* 400px */ {
     zoom: 0.8;
     transform-origin: top left;
 }
 
 }
 @media (min-width: 768px) and (max-width: 1366px) {
-  .escolha,  /* 620px */
+.escolha,  /* 620px */
 .rcs, /* 216px */
 .suggestions-list, /* 400px */
-.search-box /* 400px */ {
+.search-box,
+.conservaEspecial /* 400px */ {
     zoom: 0.9;
     transform-origin: top left;
 }
@@ -413,6 +491,17 @@
     <div class="opt1">
       <button onclick="Alternar3()" id="btn3">Automações</button>
     </div>
+  </div>
+
+  <div class="conservaEspecial">
+  <div class="switch off" id="toggleSwitch">
+    <div class="switch-labels">
+      <span>ON</span>
+      <span>OFF</span>
+    </div>
+    <div class="toggle-circle"></div>
+  </div>
+  <div class="conserva">Trecho em conserva</div>
   </div>
 
   <div class="rcs" id="rcsEscolha">
@@ -736,13 +825,13 @@
     let rcsTimeout = null;
     let animacaoConcluida = true;
 
-function clearAllRCs() {
-  rc1.classList.remove("t1");
-  rc2.classList.remove("t1");
-  rc3.classList.remove("t1");
-  rc4.classList.remove("t1");
-  rc5.classList.remove("t1");
-}
+    function clearAllRCs() {
+      rc1.classList.remove("t1");
+      rc2.classList.remove("t1");
+      rc3.classList.remove("t1");
+      rc4.classList.remove("t1");
+      rc5.classList.remove("t1");
+    }
 function imgCgrToggle() {
 
     const ignorar = [rc1, rc2, rc3, rc4, rc5];
@@ -830,8 +919,11 @@ function esconderTabelas() {
   rcs.style.display = "none";
 }
 
+const conserva = document.querySelector(".conservaEspecial")
+
 function Alternar1() {
   btn1.classList.toggle("t1");
+  conserva.classList.toggle("t1");
   btn2.classList.remove("t1");
   btn3.classList.remove("t1");
 
@@ -852,6 +944,7 @@ function Alternar2() {
   btn2.classList.toggle("t1");
   btn1.classList.remove("t1");
   btn3.classList.remove("t1");
+  conserva.classList.remove("t1");
   esconderTabelas();
   input.value = "";
   imgCgrToggle();
@@ -861,6 +954,7 @@ function Alternar3() {
   btn3.classList.toggle("t1");
   btn1.classList.remove("t1");
   btn2.classList.remove("t1");
+  conserva.classList.remove("t1");
   esconderTabelas();
   input.value = "";
   imgCgrToggle();
@@ -878,6 +972,12 @@ function toggleSearch(forceClose = false) {
     input.dispatchEvent(new Event("input"));
 
     if (btn1.classList.contains("t1")) {
+      conserva.classList.add("t1");
+    } else {
+      conserva.classList.remove("t1");
+    }
+
+    if (btn1.classList.contains("t1")) {
       [tabela1, tabela2, tabela3, tabela4, tabela5].forEach(t => t.style.display = "table");
       rcsEscolha();
       rcs.style.display = "flex";
@@ -889,6 +989,7 @@ function toggleSearch(forceClose = false) {
     input.focus();
     [btn1, btn2, btn3].forEach(b => b.style.display = "none");
     icon.classList.toggle("clicado");
+    conserva.classList.remove("t1");
     esconderTabelas();
     tabela.style.display = btn1.classList.contains("t1") ? "table" : "none";
   }
@@ -1057,6 +1158,29 @@ const verificarTecla = (event) => {
 
 // Adiciona o evento de keydown para a página inteira
 document.addEventListener('keydown', verificarTecla);
+
+const toggle = document.getElementById("toggleSwitch");
+    let isOn = false;
+
+    toggle.addEventListener("click", () => {
+      isOn = !isOn;
+      toggle.classList.toggle("on", isOn);
+      toggle.classList.toggle("off", !isOn);
+
+      if (isOn) {
+        ativarFuncao();
+      } else {
+        desativarFuncao();
+      }
+    });
+
+    function ativarFuncao() {
+      console.log("Ligado! Função ON executada.");
+    }
+
+    function desativarFuncao() {
+      console.log("Desligado! Função OFF executada.");
+    }
 
 // Chamada da função para ativar o comportamento de navegação com teclado
 navegarSugestoes();
